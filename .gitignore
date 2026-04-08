@@ -11,3 +11,4 @@ ssl-proxy/cert.pem
 ssl-proxy/create-new-self-signed.sh
 ssl-proxy/key.pem
 svn-data/*
+plume-data/*
