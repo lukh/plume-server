@@ -1,0 +1,4 @@
+- [x] run on RPI
+- [x] mkcert
+- [ ] svnadmin tool
+- [ ] Understand svn workflow

@@ -1,0 +1,13 @@
+*.7z
+*.zip
+*.rar
+*.tar
+*.tar.gz
+backups/
+bin/ 
+out/
+.env
+ssl-proxy/cert.pem
+ssl-proxy/create-new-self-signed.sh
+ssl-proxy/key.pem
+svn-data/*
