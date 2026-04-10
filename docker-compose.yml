@@ -75,6 +75,8 @@ services:
 
 
     plume-proxy:
+        env_file:
+            - .env
         image: nginx:alpine
         restart: always
         depends_on:
@@ -84,6 +86,8 @@ services:
         - 443:443
         - 80:80
         volumes:
-        - ./proxy:/etc/nginx/conf.d:ro
+        - ./templates:/etc/nginx/templates
+        - ${CERT_FILE}:/etc/nginx/conf.d/cert.pem
+        - ${KEY_FILE}:/etc/nginx/conf.d/key.pem
         - ${INVENTREE_EXT_VOLUME}/static:/var/www/static:z
         - ${INVENTREE_EXT_VOLUME}/media:/var/www/media:z

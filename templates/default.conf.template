@@ -1,12 +1,12 @@
 server {
     listen 80;
-    server_name svn.plume-server.localhost;
+    server_name ${SVN_HOST};
     return 301 https://$host$request_uri;
 }
 
 server {
   listen 443 ssl;
-  server_name svn.plume-server.localhost;
+  server_name ${SVN_HOST};
 
 #   ssl_certificate /etc/nginx/conf.d/HOSTNAME+1.pem;
 #   ssl_certificate_key /etc/nginx/conf.d/HOSTNAME+1-key.pem;
@@ -30,7 +30,7 @@ location / {
 
 server {
   listen 443 ssl;
-  server_name inventree.plume-server.localhost;
+  server_name ${INVENTREE_HOST};
 
 #   ssl_certificate /etc/nginx/conf.d/HOSTNAME+1.pem;
 #   ssl_certificate_key /etc/nginx/conf.d/HOSTNAME+1-key.pem;
