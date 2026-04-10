@@ -1,6 +1,55 @@
 Plumer Server
 =============
 
+
+Pull this repo on the server;
+
+> git clone
+> cd plume-server
+
+
+# Local Certificates
+## install mkcert
+
+from [this site](https://docs.raspap.com/features-core/ssl/#creating-a-certificate)
+On the server 
+
+> sudo apt-get install libnss3-tools
+> sudo wget https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-linux-arm -O /usr/local/bin/mkcert
+> sudo chmod +x /usr/local/bin/mkcert
+>
+> mkcert -install
+> mkcd proxy
+> mkcert HOSTNAME IP
+
+It creates a cert.pem and key.pem in ./proxy
+
+On the client (arch)
+
+> download rootCA.pem from the server (server: ~/.local/share/mkcert)
+> sudo cp rootCA.pem /etc/ca-certificates/trust-source/anchors
+> sudo update-ca-trust
+
+
+# Configure plume-server
+
+
+copy .env.base to .env
+
+> cd plume-server
+> cp .env.base .env
+
+Open and edit the env file .env, mainly:
+
+```
+MAIN_HOST=exemple.local
+INVENTREE_EXT_VOLUME=./plume-data/inventree-data
+INVENTREE_DB_PASSWORD=pgpassword
+SVN_DOCKER_VOLUME_DIR=./plume-data/svn-data
+```
+
+create the INVENTREE_EXT_VOLUME and SVN_DOCKER_VOLUME_DIR directories
+
 ## Initialize Inventree
 
 ### Initial Database Setup
