@@ -30,6 +30,9 @@ On the client (arch)
 > sudo cp rootCA.pem /etc/ca-certificates/trust-source/anchors
 > sudo update-ca-trust
 
+## TODO check ?
+
+https://dev.to/ietxaniz/how-to-implement-https-in-local-networks-using-lets-encrypt-4eh
 
 # Configure plume-server
 
@@ -65,9 +68,16 @@ create the INVENTREE_EXT_VOLUME and SVN_DOCKER_VOLUME_DIR directories
 > docker compose up -d
 
 
+Enable "Allow same IPN"
+
+
 ## Subversion
 
+
+### Housekeeping
+
 > create-user.sh
+
 > create-repo.sh
 
 
@@ -83,3 +93,25 @@ user1 = r
 user2 = rw
 ```
 ("" empty string means no access at all, "r" means read-only and "rw" means read & write permission).
+
+
+
+
+### need lock
+
+There are prehook and post hook on the server side to make locking of FCStd file mandatory.
+
+To avoid commit without lock, and force readonly on FCStd files if not locked :
+
+
+On each client : nano ~/.subversion/config
+
+``` 
+### Section for configuring miscellaneous Subversion options.
+[miscellany]
+enable-auto-props = yes
+
+### Section for configuring automatic properties.
+[auto-props]
+*.FCStd = svn:needs-lock=*
+```

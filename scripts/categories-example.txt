@@ -1,0 +1,9 @@
+Mechanical
+    Bicycles Parts | Part from bicycles
+        Wheels | big and small wheels
+        Potence
+
+    Hardware
+        Screws
+        Nuts
+        Rondelles
