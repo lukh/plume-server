@@ -14,8 +14,9 @@ server {
   ssl_certificate /etc/nginx/conf.d/cert.pem;
   ssl_certificate_key /etc/nginx/conf.d/key.pem;
 
-   # SVN
 location / {
+        client_max_body_size 256M;
+
         set $fixed_destination $http_destination;
         if ( $http_destination ~* ^https(.*)$ ) {
             set $fixed_destination http$1;
