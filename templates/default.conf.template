@@ -4,6 +4,7 @@ server {
     return 301 https://$host$request_uri;
 }
 
+# SVN
 server {
   listen 443 ssl;
   server_name ${SVN_HOST};
@@ -28,6 +29,7 @@ location / {
     }
 }
 
+# Inventree
 server {
   listen 443 ssl;
   server_name ${INVENTREE_HOST};
@@ -37,7 +39,6 @@ server {
   ssl_certificate /etc/nginx/conf.d/cert.pem;
   ssl_certificate_key /etc/nginx/conf.d/key.pem;
 
-   # Inventree
    location / {
         proxy_set_header      Host              $http_host;
         proxy_set_header      X-Forwarded-By    $server_addr:$server_port;
