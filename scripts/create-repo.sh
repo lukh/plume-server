@@ -38,6 +38,92 @@ SVNLOOK=/usr/bin/svnlook
 
 AUTHOR=\$(\$SVNLOOK author -t "\$TXN" "\$REPOS")
 
+
+#========================
+# What to allow or block
+#========================
+# .From https://www.ryanschulze.net/archives/1563
+
+# Note : Tagging, released are done
+#   - with a folder svn copy (for tagging)
+#   - with copying files (svn local copy) and commiting the full folder
+# So locking file ADD on this folder will work
+
+# for changes in  releases|exports|tags :
+#   if it is a file :
+#       ADD, UPDATE, DELETE, PROPS are forbidden
+#   if folder :
+#       DELETE, UPDATE are forbidden
+
+ALLOWED_PATTERN=".*/MANIFEST\.md\$"
+
+UPDATE=block
+DELETE=block
+ADD=block
+COPY=allow
+PROPERTIES=block
+
+
+TMPFILE=\$(mktemp) || exit 1
+trap 'rm -f "$TMPFILE"' EXIT
+
+# "\$SVNLOOK" changed --copy-info -t "\$TXN" "\$REPOS" > "\$TMPFILE" || exit 1
+"\$SVNLOOK" changed -t "\$TXN" "\$REPOS" > "\$TMPFILE" || exit 1
+
+while read -r line
+do
+    ACTION="\${line%% *}"
+    FILE_PATH="\$(printf '%s\n' "\${line#* }" | sed 's/^ *//')"
+
+    if printf '%s\n' "\$FILE_PATH" | grep -Eq '.*(releases|exports|tags)\/.*\$'; then
+        case "\$ACTION" in
+        # case "\$line" in
+            U|UU)
+            # "U *"|"UU *")
+                [ "\$UPDATE" = "block" ] && {
+                    echo "Cannot UPDATE on protected releases|exports|tags! (\${FILE_PATH})" >&2
+                    exit 1
+                }
+                ;;
+            D)
+            #"D *")
+                [ "\$DELETE" = "block" ] && {
+                    echo "Cannot DELETE on protected releases|exports|tags! (\${FILE_PATH})" >&2
+                    exit 1
+                }
+                ;;
+            # "A +*")
+            #     [ "\$COPY" = "block" ] && {
+            #         echo "Cannot COPY on protected releases|exports|tags! (\${FILE_PATH})" >&2
+            #         exit 1
+            #     }
+            #     ;;
+            # A)
+            # "A *")
+            #     if [ "\$ADD" = "block" ]
+            #         # &&
+            #         # [ "\${FILE_PATH%/}" = "\$FILE_PATH" ] ;
+            #         # &&
+            #         # ! printf '%s\n' "\$FILE_PATH" | grep -Eq "\$ALLOWED_PATTERN";
+            #     then
+            #         echo "Cannot ADD on protected releases|exports|tags! (\${FILE_PATH})" >&2
+            #         exit 1
+                    #     fi
+            #     ;;
+             _U)
+            #"_U *")
+                [ "\$PROPERTIES" = "block" ] && {
+                    echo "Cannot PROPERTIES on protected releases|exports|tags! (\${FILE_PATH})" >&2
+                    exit 1
+                }
+                ;;
+        esac
+    fi
+done < "\$TMPFILE"
+
+
+
+
 LOCKED_EXTENSIONS="FCStd step stp iges igs slvs"
 
 is_locked_extension() {
