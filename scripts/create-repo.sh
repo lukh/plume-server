@@ -39,9 +39,9 @@ SVNLOOK=/usr/bin/svnlook
 AUTHOR=\$(\$SVNLOOK author -t "\$TXN" "\$REPOS")
 
 
-#========================
-# What to allow or block
-#========================
+#======================================
+# Protect releases|exports|tags folders
+#======================================
 # .From https://www.ryanschulze.net/archives/1563
 
 # Note : Tagging, released are done
@@ -59,8 +59,8 @@ ALLOWED_PATTERN=".*/MANIFEST\.md\$"
 
 UPDATE=block
 DELETE=block
-ADD=block
-COPY=allow
+# not implemented ADD=block
+# not implemented COPY=allow
 PROPERTIES=block
 
 
@@ -77,21 +77,26 @@ do
 
     if printf '%s\n' "\$FILE_PATH" | grep -Eq '.*(releases|exports|tags)\/.*\$'; then
         case "\$ACTION" in
-        # case "\$line" in
             U|UU)
-            # "U *"|"UU *")
                 [ "\$UPDATE" = "block" ] && {
                     echo "Cannot UPDATE on protected releases|exports|tags! (\${FILE_PATH})" >&2
                     exit 1
                 }
                 ;;
             D)
-            #"D *")
                 [ "\$DELETE" = "block" ] && {
                     echo "Cannot DELETE on protected releases|exports|tags! (\${FILE_PATH})" >&2
                     exit 1
                 }
                 ;;
+            
+            _U)
+                [ "\$PROPERTIES" = "block" ] && {
+                    echo "Cannot PROPERTIES on protected releases|exports|tags! (\${FILE_PATH})" >&2
+                    exit 1
+                }
+                ;;
+
             # "A +*")
             #     [ "\$COPY" = "block" ] && {
             #         echo "Cannot COPY on protected releases|exports|tags! (\${FILE_PATH})" >&2
@@ -108,19 +113,19 @@ do
             #     then
             #         echo "Cannot ADD on protected releases|exports|tags! (\${FILE_PATH})" >&2
             #         exit 1
-                    #     fi
+            #     fi
             #     ;;
-             _U)
-            #"_U *")
-                [ "\$PROPERTIES" = "block" ] && {
-                    echo "Cannot PROPERTIES on protected releases|exports|tags! (\${FILE_PATH})" >&2
-                    exit 1
-                }
-                ;;
         esac
     fi
 done < "\$TMPFILE"
 
+
+
+
+
+#=============================================
+# Lock : needs-lock, lock owner and not locked
+#=============================================
 
 
 
@@ -213,6 +218,13 @@ done
 
 [ "\$NEED_LOCK" -eq 0 ] && exit 0
 
+if [ "\$STEAL" = "1" ]; then
+    echo ""
+    echo "ERROR: Stealing locks forbidden."
+    echo ""
+    exit 1
+fi
+
 # if [ -z "\$COMMENT" ]; then
 #     echo ""
 #     echo "ERROR: Lock comment required."
@@ -225,13 +237,6 @@ done
 # if [ "\$LEN" -lt 10 ]; then
 #     echo ""
 #     echo "ERROR: Lock comment too short."
-#     echo ""
-#     exit 1
-# fi
-
-# if [ "\$STEAL" = "1" ]; then
-#     echo ""
-#     echo "ERROR: Stealing locks forbidden."
 #     echo ""
 #     exit 1
 # fi
