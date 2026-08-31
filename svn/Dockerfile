@@ -5,7 +5,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
     apt-get install -y subversion apache2 libapache2-mod-svn libsvn-dev && \
-    apt-get install -y grep gawk && \
+    apt-get install -y grep gawk tree && \
     a2enmod dav && \
     a2enmod dav_svn && \
     mkdir -p ${SVN_HOME} && \
