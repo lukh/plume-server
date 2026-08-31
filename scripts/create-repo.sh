@@ -17,11 +17,21 @@ if [ -z "$REPO_NAME" ]; then
     exit 1
 fi
 
+if docker exec svn-server test -d "/home/svn/$REPO_NAME"; then
+    echo "Repository already exists !"
+    exit 1
+fi
+
+echo
+
 read -p "Enter the repository title:  "  REPO_TITLE
-read -p "Enter the repository descriptio:  "  REPO_DESC
+read -p "Enter the repository description:  "  REPO_DESC
+
+echo
 
 read -p "Enter the Inventree URL:  "  INVENTREE_URL
 
+echo
 
 read -p "publish exports to Inventree [true|false] [true]:  "  EXPORT_INVENTREE
 EXPORT_INVENTREE="${EXPORT_INVENTREE:-true}"
