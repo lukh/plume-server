@@ -64,6 +64,7 @@ SVN_EXPORT_SUBFOLDER="${SVN_EXPORT_SUBFOLDER:-exports}"
 
 
 ##########################################################
+# Initiate repo creation
 ##########################################################
 
 docker exec -it svn-server svnadmin create /home/svn/$REPO_NAME
@@ -71,6 +72,7 @@ docker exec -it svn-server chown -R www-data:subversion /home/svn/$REPO_NAME
 docker exec -it svn-server chmod -R g+rws /home/svn/$REPO_NAME
 
 ##########################################################
+# Adding hooks
 ##########################################################
 
 
@@ -410,6 +412,7 @@ EOF
 
 
 ##########################################################
+# Set default authorisations for the new repo
 ##########################################################
 
 docker exec -i svn-server bash <<EOF
@@ -422,6 +425,10 @@ AUTHZ
 EOF
 
 
+##########################################################
+# Summary
+##########################################################
+
 
 echo
 echo "Repository created successfully:"
@@ -431,9 +438,13 @@ echo "Hooks installed:"
 echo "  - pre-commit"
 echo "  - pre-lock"
 echo "  - pre-unlock"
-echo "Adding files:"
+echo
+echo "Added files:"
 echo "  - .plume.json"
 echo "  - README.md"
 echo
-echo "Remember to add svn:needs-lock properties in your working copy."
+echo "Added initial tree..."
 echo
+echo "ATTENTION: Remember to add svn:needs-lock properties in your working copy."
+echo "ATTENTION: default authorisations have been given : rw for all authorized users, no access for anonymous. fine tune if needed."
+echo "Good luck !"
