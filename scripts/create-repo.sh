@@ -58,7 +58,7 @@ SVN_EXPORT_MODE="${SVN_EXPORT_MODE:-subfolder}"
 read -p "Subversion export rootfolder (relative to repo) [exports] ?:  "  SVN_EXPORT_ROOTFOLDER
 SVN_EXPORT_ROOTFOLDER="${SVN_EXPORT_ROOTFOLDER:-exports}"
 
-read -p "Subversion export subfolder (relative to project) ?:  "  SVN_EXPORT_SUBFOLDER
+read -p "Subversion export subfolder (relative to project) [exports] ?:  "  SVN_EXPORT_SUBFOLDER
 SVN_EXPORT_SUBFOLDER="${SVN_EXPORT_SUBFOLDER:-exports}"
 
 
