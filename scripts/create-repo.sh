@@ -21,15 +21,36 @@ read -p "Enter the repository title:  "  REPO_TITLE
 read -p "Enter the repository descriptio:  "  REPO_DESC
 
 read -p "Enter the Inventree URL:  "  INVENTREE_URL
-read -p "publish exports to Inventree [true|false] ?:  "  EXPORT_INVENTREE
-[ "$EXPORT_INVENTREE" = "true" ] || [ "$EXPORT_INVENTREE" = "false" ] || { echo "Error : must be true|false" && exit 1; }
 
-read -p "publish exports to Subversion [true|false] ?:  "  EXPORT_SVN
-[ "$EXPORT_SVN" = "true" ] || [ "$EXPORT_SVN" = "false" ] || { echo "Error : must be true|false" && exit 1; }
 
-read -p "Subversion export mode [subfolder|rootfolder] ?:  "  SVN_EXPORT_MODE
-read -p "Subversion export rootfolder (relative to repo) ?:  "  SVN_EXPORT_ROOTFOLDER
+read -p "publish exports to Inventree [true|false] [true]:  "  EXPORT_INVENTREE
+EXPORT_INVENTREE="${EXPORT_INVENTREE:-true}"
+[ "$EXPORT_INVENTREE" = "true" ] || [ "$EXPORT_INVENTREE" = "false" ] || {
+    echo "Error: must be true|false"
+    exit 1
+}
+
+
+read -p "Publish exports to Subversion [true|false] [true]: " EXPORT_SVN
+EXPORT_SVN="${EXPORT_SVN:-true}"
+[ "$EXPORT_SVN" = "true" ] || [ "$EXPORT_SVN" = "false" ] || {
+    echo "Error: must be true|false"
+    exit 1
+}
+
+read -p "Subversion export mode [subfolder|rootfolder] [subfolder] ?:  "  SVN_EXPORT_MODE
+SVN_EXPORT_MODE="${SVN_EXPORT_MODE:-subfolder}"
+[ "$SVN_EXPORT_MODE" = "subfolder" ] || [ "$SVN_EXPORT_MODE" = "rootfolder" ] || {
+    echo "Error: must be subfolder|rootfolder"
+    exit 1
+}
+
+
+read -p "Subversion export rootfolder (relative to repo) [exports] ?:  "  SVN_EXPORT_ROOTFOLDER
+SVN_EXPORT_ROOTFOLDER="${SVN_EXPORT_ROOTFOLDER:-exports}"
+
 read -p "Subversion export subfolder (relative to project) ?:  "  SVN_EXPORT_SUBFOLDER
+SVN_EXPORT_SUBFOLDER="${SVN_EXPORT_SUBFOLDER:-exports}"
 
 
 
@@ -355,7 +376,7 @@ EOF
 ##########################################################
 
 docker exec -i svn-server bash <<EOF
-cat > /home/svn/authz <<'AUTHZ'
+cat >> /home/svn/authz <<'AUTHZ'
 [$REPO_NAME:/]
 \$anonymous = 
 \$authenticated = rw
