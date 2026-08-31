@@ -9,21 +9,16 @@ fi
 WD=`pwd`
 
 echo '---'
-echo 'Shutting down SVN Server...'
+echo 'Shutting down Proxy Server...'
 
 # Temporarily shut down the SVN Server until the backup procedure has finished.
-# docker-compose down svn
+docker-compose down plume-proxy
 
-echo "Backing up the entire SVN Server instance into $BACKUP_DIR/"
+echo "Backing up the entire SVN Server instance into $BACKUP_DIR"
 echo 'This might take a while, perhaps go grab a coffee...'
 
 # Ensure that the backup output directory exists.
-mkdir -p $BACKUP_DIR
-cd $BACKUP_DIR/..
-
-# Make sure that this is the full, 
-# absolute path to the directory where
-# the SVN Server container volume is mounted to.
+mkdir -p "$BACKUP_DIR"
 
 # Get the current time for the output file name.
 TIMESTAMP=`date +"%Y-%m-%d-%H-%M-%S"`
@@ -32,13 +27,12 @@ TIMESTAMP=`date +"%Y-%m-%d-%H-%M-%S"`
 OUTPUT_FILE=$TIMESTAMP-svn-server-backup.tar.gz
 
 # Compress the entire SVN Server instance into a tar.gz archive.
-docker run --rm --volumes-from svn-server -v ${BACKUP_DIR}:/backups ubuntu tar -zcvf /backups/$OUTPUT_FILE --directory /home/svn .
+docker run --rm --volumes-from svn-server -v "${BACKUP_DIR}":/backups ubuntu tar -zcvf /backups/$OUTPUT_FILE --directory /home/svn .
 
 echo '---'
-echo "SVN Server backup was exported into $OUTPUT_FILE_PATH"
+echo "SVN Server backup was exported into ${BACKUP_DIR}/${OUTPUT_FILE_PATH}"
 echo 'Maybe consider encrypting the archive using a strong password + 7z (choose ENCRYPT FILE NAMES TOO  when asked).'
 echo '---'
-echo 'Restarting SVN Server after backup...'
+echo 'Restarting Proxy Server after backup...'
 
-# docker-compose up -d svn
-cd $WD
+docker-compose up -d plume-proxy
