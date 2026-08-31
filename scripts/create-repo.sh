@@ -22,10 +22,10 @@ read -p "Enter the repository descriptio:  "  REPO_DESC
 
 read -p "Enter the Inventree URL:  "  INVENTREE_URL
 read -p "publish exports to Inventree [true|false] ?:  "  EXPORT_INVENTREE
-[ "$EXPORT_INVENTREE" = "true" ] || [ "$EXPORT_INVENTREE" = "false" ] || { echo "Error : must be true|false" && exit 1 }
+[ "$EXPORT_INVENTREE" = "true" ] || [ "$EXPORT_INVENTREE" = "false" ] || { echo "Error : must be true|false" && exit 1; }
 
 read -p "publish exports to Subversion [true|false] ?:  "  EXPORT_SVN
-[ "$EXPORT_SVN" = "true" ] || [ "$EXPORT_SVN" = "false" ] || { echo "Error : must be true|false" && exit 1 }
+[ "$EXPORT_SVN" = "true" ] || [ "$EXPORT_SVN" = "false" ] || { echo "Error : must be true|false" && exit 1; }
 
 read -p "Subversion export mode [subfolder|rootfolder] ?:  "  SVN_EXPORT_MODE
 read -p "Subversion export rootfolder (relative to repo) ?:  "  SVN_EXPORT_ROOTFOLDER
@@ -33,10 +33,16 @@ read -p "Subversion export subfolder (relative to project) ?:  "  SVN_EXPORT_SUB
 
 
 
+##########################################################
+##########################################################
 
-docker exec -it svn-server svnadmin create $REPO_NAME
+docker exec -it svn-server svnadmin create /home/svn/$REPO_NAME
 docker exec -it svn-server chown -R www-data:subversion /home/svn/$REPO_NAME
 docker exec -it svn-server chmod -R g+rws /home/svn/$REPO_NAME
+
+##########################################################
+##########################################################
+
 
 echo
 echo "Installing hooks..."
@@ -306,7 +312,8 @@ docker exec svn-server chmod +x /home/svn/$REPO_NAME/hooks/pre-lock
 docker exec svn-server chmod +x /home/svn/$REPO_NAME/hooks/pre-unlock
 
 
-
+##########################################################
+##########################################################
 echo
 echo "Adding README.md and .plume.json"
 
@@ -337,15 +344,24 @@ Tree
 README
 
 # Import initial AVANT d'installer le hook
-svn import "\$TMPDIR" "/home/svn/$REPO_NAME" \
+svn import "\$TMPDIR" "file:///home/svn/$REPO_NAME" \
     -m "Initial repository structure"
 
 rm -rf "\$TMPDIR"
 EOF
 
 
+##########################################################
+##########################################################
 
+docker exec -i svn-server bash <<EOF
+cat > /home/svn/authz <<'AUTHZ'
+[$REPO_NAME:/]
+\$anonymous = 
+\$authenticated = rw
 
+AUTHZ
+EOF
 
 
 
