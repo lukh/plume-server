@@ -6,12 +6,6 @@ if [ -z "$BACKUP_DIR" ]; then
     exit 1
 fi
 
-if [ -z "$SVN_DOCKER_VOLUME_DIR" ]; then
-    echo "\$SVN_DOCKER_VOLUME_DIR must be set !"
-    exit 1
-fi
-    
-
 WD=`pwd`
 
 echo '---'
@@ -35,10 +29,10 @@ cd $BACKUP_DIR/..
 TIMESTAMP=`date +"%Y-%m-%d-%H-%M-%S"`
 
 # Construct the output file path using the timestamp.
-OUTPUT_FILE_PATH=$BACKUP_DIR/$TIMESTAMP-svn-server-backup.tar.gz
+OUTPUT_FILE=$TIMESTAMP-svn-server-backup.tar.gz
 
 # Compress the entire SVN Server instance into a tar.gz archive.
-tar -zcvf $OUTPUT_FILE_PATH --directory $SVN_DOCKER_VOLUME_DIR .
+docker run --rm --volumes-from svn-server -v ${BACKUP_DIR}:/backups ubuntu tar -zcvf /backups/$OUTPUT_FILE --directory /home/svn .
 
 echo '---'
 echo "SVN Server backup was exported into $OUTPUT_FILE_PATH"
