@@ -6,13 +6,13 @@ server {
 
 # SVN
 server {
-  listen 443 ssl;
-  server_name ${SVN_HOST};
+    listen 443 ssl;
+    server_name ${SVN_HOST};
 
-  ssl_certificate /etc/nginx/conf.d/cert.pem;
-  ssl_certificate_key /etc/nginx/conf.d/key.pem;
+    ssl_certificate /etc/nginx/conf.d/cert.pem;
+    ssl_certificate_key /etc/nginx/conf.d/key.pem;
 
-location / {
+    location / {
         client_max_body_size 256M;
 
         set $fixed_destination $http_destination;
@@ -30,13 +30,13 @@ location / {
 
 # Inventree
 server {
-  listen 443 ssl;
-  server_name ${INVENTREE_HOST};
+    listen 443 ssl;
+    server_name ${INVENTREE_HOST};
 
-  ssl_certificate /etc/nginx/conf.d/cert.pem;
-  ssl_certificate_key /etc/nginx/conf.d/key.pem;
+    ssl_certificate /etc/nginx/conf.d/cert.pem;
+    ssl_certificate_key /etc/nginx/conf.d/key.pem;
 
-   location / {
+    location / {
         proxy_set_header      Host              $http_host;
         proxy_set_header      X-Forwarded-By    $server_addr:$server_port;
         proxy_set_header      X-Forwarded-For   $remote_addr;
