@@ -43,7 +43,7 @@ docker exec -i svn-server mkdir -p "$TMPDIR/exports" # TODO : catch the svn_expo
 
 docker exec -i svn-server bash <<EOF
 svn import "$TMPDIR" "file:///home/svn/$REPO_NAME/$PROJECT_PATH" \
-    -m "Initial repository structure"
+    -m "Initial project structure for $PROJECT_PATH"
 
 rm -rf "$TMPDIR"
 EOF
