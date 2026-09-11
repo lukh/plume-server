@@ -21,20 +21,20 @@ docker-compose down plume-proxy
 # Get the current time for the output file name.
 TIMESTAMP=`date +"%Y%m%d__%H-%M-%S"`
 
-echo "Backing up the entire SVN Server instance into {$BACKUP_DIR}/${$TIMESTAMP}"
+echo "Backing up the entire SVN Server instance into ${BACKUP_DIR}/${TIMESTAMP}"
 echo 'This might take a while, perhaps go grab a coffee...'
 
 # Ensure that the backup output directory exists.
-mkdir -p "{$BACKUP_DIR}/${$TIMESTAMP}"
+mkdir -p "${BACKUP_DIR}/${TIMESTAMP}"
 
 # Construct the output file path using the timestamp.
 OUTPUT_FILE=svn-server-backup.tar.gz
 
 # Compress the entire SVN Server instance into a tar.gz archive.
-docker run --rm --volumes-from svn-server -v "{$BACKUP_DIR}/${$TIMESTAMP}":/backups ubuntu tar -zcvf /backups/$OUTPUT_FILE --directory /home/svn .
+docker run --rm --volumes-from svn-server -v "${BACKUP_DIR}/${TIMESTAMP}":/backups ubuntu tar -zcvf /backups/$OUTPUT_FILE --directory /home/svn .
 
 echo '---'
-echo "SVN Server backup was exported into {$BACKUP_DIR}/${$TIMESTAMP}}/${OUTPUT_FILE_PATH}"
+echo "SVN Server backup was exported into ${BACKUP_DIR}/${TIMESTAMP}}/${OUTPUT_FILE_PATH}"
 echo 'Maybe consider encrypting the archive using a strong password + 7z (choose ENCRYPT FILE NAMES TOO  when asked).'
 echo '---'
 
@@ -42,7 +42,7 @@ echo '---'
 #################################################
 ### Inventree
 #################################################
-docker compose run --rm -v "{$BACKUP_DIR}/${$TIMESTAMP}":/home/inventree/data/backup inventree-server invoke backup
+docker compose run --rm -v "${BACKUP_DIR}/${TIMESTAMP}":/home/inventree/data/backup inventree-server invoke backup
 
 
 # Restart proxy
