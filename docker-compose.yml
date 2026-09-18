@@ -3,7 +3,7 @@ services:
     svn:
         # Subversion service
         build: ./svn
-        restart: always
+        restart: unless-stopped
         container_name: 'svn-server'
         working_dir: '/home/svn'
         volumes:
@@ -37,7 +37,7 @@ services:
             - ${INVENTREE_CACHE_PORT:-6379}
         volumes:
             - ${INVENTREE_EXT_VOLUME}/redis:/data
-        restart: always
+        restart: unless-stopped
 
     # InvenTree web server service
     # Uses gunicorn as the web server
@@ -78,7 +78,7 @@ services:
         env_file:
             - .env
         image: nginx:alpine
-        restart: always
+        restart: unless-stopped
         depends_on:
         - svn
         - inventree-server
